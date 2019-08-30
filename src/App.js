@@ -1,11 +1,17 @@
 import React from 'react';
-import { Button } from 'antd';
+import { Route, Switch, HashRouter } from 'react-router-dom';
+
+
+import Main from './page';
+
 
 function App() {
   return (
-    <div>
-        <Button>Test</Button>
-    </div>
+    <HashRouter>
+      <Switch>
+        <Route path="/" component={Main} />
+      </Switch>
+    </HashRouter>
   );
 }
 
