@@ -6,10 +6,8 @@ import SortingPage from './sorting';
 import { Application } from '../configurations';
 
 
-import { Menu, Icon, Layout } from 'antd';
-
-const { SubMenu } = Menu;
-const { Header, Content, Footer, Sider } = Layout;
+import { Menu, Layout } from 'antd';
+const { Header, Content, Footer } = Layout;
 
 
 class Main extends Component {
@@ -34,7 +32,7 @@ class Main extends Component {
             </Header>
             <Content style={{ padding: '0 50px' }}>
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
-                    <Content style={{ padding: '0 24px', minHeight: 280 }}>
+                    <Content style={{ padding: '0 24px', minHeight: "280px" }}>
                         <Switch>
                             <Route path={Application.ALGORITHMS.SORTING.PATH} component={SortingPage} />
                             <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SortingPage} />
