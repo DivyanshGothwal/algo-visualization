@@ -119,7 +119,7 @@ class Sorting extends Component {
             this.callAlgorithmMethod();
         }
     }
-
+ 
     shouldComponentUpdate(nextProps, nextState) {
         const { array, isDisabled, comparedIndex, sortingSpeed } = this.state;
         if (nextState.array.length !== array.length || nextState.isDisabled !== isDisabled || nextState.comparedIndex !== comparedIndex || nextState.sortingSpeed !== sortingSpeed) {
