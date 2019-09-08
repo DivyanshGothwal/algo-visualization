@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Route, Switch, Link, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
 
 
 import SortingPage from './sorting';
+import SearchingPage from './searching';
 import { Application } from '../configurations';
 
 
@@ -12,20 +13,26 @@ const { Header, Content, Footer } = Layout;
 
 class Main extends Component {
     render() {
+        let selectedPath = Object.entries(Application.ALGORITHMS).map(([key, value]) => {
+            if (value.PATH === this.props.history.location.pathname) {
+                return value.NAME
+            }
+            else return null;
+        });
         return (<Layout>
             <Header className="header">
                 <div className="logo" />
                 <Menu
                     theme="dark"
                     mode="horizontal"
-                    defaultSelectedKeys={Application.ALGORITHMS.SORTING.NAME}
+                    defaultSelectedKeys={selectedPath.filter(Boolean)}
                     style={{ lineHeight: '64px' }}
                 >
                     {
                         Object.entries(Application.ALGORITHMS).map(([key, value]) => {
-                            return (<Menu.Item key={value.NAME}> <Link key={value.NAME} to={value.PATH}>
+                            return (<Menu.Item key={value.NAME}> <NavLink key={value.NAME} to={value.PATH}>
                                 {value.NAME}
-                            </Link></Menu.Item>);
+                            </NavLink></Menu.Item>);
                         })
                     }
                 </Menu>
@@ -35,13 +42,13 @@ class Main extends Component {
                     <Content style={{ padding: '0 24px', minHeight: "280px" }}>
                         <Switch>
                             <Route path={Application.ALGORITHMS.SORTING.PATH} component={SortingPage} />
-                            <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SortingPage} />
+                            <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SearchingPage} />
                             <Redirect to={Application.ALGORITHMS.SORTING.PATH} />
                         </Switch>
                     </Content>
                 </Layout>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>Algorithm Visualization ©2018 Created by Divyansh</Footer>
+            <Footer style={{ textAlign: 'center' }}>Algorithm Visualization ©2019 Created by Divyansh</Footer>
         </Layout>);
     }
 }

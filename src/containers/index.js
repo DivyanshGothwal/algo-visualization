@@ -1,6 +1,7 @@
 import Sorting from './sorting';
-
+import Searching from './searching'
 
 export {
-    Sorting
+    Sorting,
+    Searching
 }

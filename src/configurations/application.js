@@ -22,6 +22,13 @@ export const ALGORITHMS = {
             LINEAR_SEARCH: "Linear Search"
         },
         NAME: "Searching",
-        PATH: "/searching"
+        PATH: "/searching",
+        MAX_ARRAY_SIZE: 250,
+        MIN_ARRAY_SIZE: 25,
+        MAX_SORTING_SPEED: 10,
+        MIN_SORTING_SPEED: 1,
+        DEFAULT_SEARCHING_ALGORITHM_TYPE: "Linear Search",
+        DEFAULT_SEARCHING_ALGORITHM_SIZE: 50,
+        DEFAULT_SEARCHING_SPEED: 10
     }
 }

@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Slider, Row, Col, Select, Form, } from 'antd';
 import { Application } from '../../configurations';
+import { Generics } from '../../utils';
 
+
+
+import { Towers } from '../../components'
 
 let initialState = {
-    array: [],
+    array: Generics.generateRandomArray(Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE),
     comparedIndex: [],
     bubbleSortInfo: {
         currentStartIndex: 0,
@@ -28,21 +32,14 @@ class Sorting extends Component {
     state = {
         ...initialState
     }
-    componentWillMount() {
-        let maxArraySize = Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE;
-        let newArray = [];
-        for (let i = 0; i < maxArraySize; i++) {
-            newArray.push(Math.ceil(100 / ((Math.random() * maxArraySize) + 1)) * 10);
-        }
-        this.setState({ array: newArray });
-    }
+
     onArraySizeChange = (value) => {
         if (value >= Application.ALGORITHMS.SORTING.MIN_ARRAY_SIZE && value <= Application.ALGORITHMS.SORTING.MAX_ARRAY_SIZE) {
             let array = [];
             for (let i = 0; i < value; i++) {
                 array.push(Math.ceil(100 / ((Math.random() * value) + 1)) * 10);
             }
-            this.setState({ ...initialState, array: array });
+            this.setState({ ...initialState, array: array, sortingSpeed: this.state.sortingSpeed });
         }
     }
     onSpeedChange = (value) => {
@@ -152,7 +149,7 @@ class Sorting extends Component {
 
     sortEle = (start, end) => {
         const { array, mergeSortInfo, sortingSpeed } = this.state;
-        let { stack, sortingFrom, shortArray } = mergeSortInfo;
+        let { sortingFrom, shortArray } = mergeSortInfo;
         let { currentStartIndex, currentEndIndex } = sortingFrom;
         let cStartIndex = currentStartIndex ? currentStartIndex : start;
         let mid = start + Math.floor((end - start) / 2);
@@ -269,22 +266,6 @@ class Sorting extends Component {
     render() {
         const { array, sortAlgorithmSelected, comparedIndex, isDisabled, bubbleSortInfo, sortingSpeed } = this.state;
         const { sortedIndexes } = bubbleSortInfo;
-        let arrayView = [];
-        let eachEleWidth = (100 / array.length) - 0.2;
-        for (let i = 0; i < array.length; i++) {
-            arrayView.push(<div
-                key={i}
-                style={{
-                    width: eachEleWidth + "%",
-                    height: array[i],
-                    backgroundColor: sortedIndexes.includes(i) ? "green" : comparedIndex.includes(i) ? "red" : "blue",
-                    display: "inline-block",
-                    verticalAlign: "top",
-                    // borderRadius: "0px 0px 10px 10px",
-                    marginRight: "0.2%"
-                }}
-            ></div>);
-        }
         return (
             <React.Fragment>
                 <Form onSubmit={this.handleSubmit}>
@@ -330,7 +311,7 @@ class Sorting extends Component {
                     </Form.Item>
                 </Form>
                 <div style={{ height: "100%", width: "100%", padding: "10px" }}>
-                    {arrayView}
+                    <Towers array={array} sortedIndexes={sortedIndexes} comparedIndex={comparedIndex} />
                 </div>
             </React.Fragment>)
     }
