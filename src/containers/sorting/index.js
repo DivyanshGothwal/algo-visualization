@@ -11,6 +11,14 @@ let initialState = {
         nextStartIndex: 1,
         sortedIndexes: []
     },
+    mergeSortInfo: {
+        stack: [],
+        sortingFrom: {
+            startIndex: undefined,
+            endIndex: undefined
+        },
+        shortArray: []
+    },
     sortingSpeed: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_SPEED,
     arraySizeToShow: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE,
     sortAlgorithmSelected: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_TYPE,
@@ -38,7 +46,6 @@ class Sorting extends Component {
         }
     }
     onSpeedChange = (value) => {
-        console.log(value);
         this.setState({ sortingSpeed: value });
     }
     onSortAlgorithmSelect = (value) => {
@@ -50,10 +57,15 @@ class Sorting extends Component {
         this.callAlgorithmMethod();
     }
     callAlgorithmMethod = () => {
-        const { sortAlgorithmSelected } = this.state;
+        const { sortAlgorithmSelected, mergeSortInfo } = this.state;
         switch (sortAlgorithmSelected) {
             case Application.ALGORITHMS.SORTING.TYPES.MERGE_SORT: {
-                this.mergeSort();
+                if (mergeSortInfo.sortingFrom.startIndex !== undefined && mergeSortInfo.sortingFrom.endIndex !== undefined) {
+                    this.sortEle(mergeSortInfo.sortingFrom.startIndex, mergeSortInfo.sortingFrom.endIndex);
+                }
+                else {
+                    this.mergeSort();
+                }
                 break;
             }
             case Application.ALGORITHMS.SORTING.TYPES.SELECTION_SORT: {
@@ -77,9 +89,138 @@ class Sorting extends Component {
     }
 
     mergeSort = () => {
+        const { mergeSortInfo, array, sortingSpeed } = this.state;
+        let newStack = [...mergeSortInfo.stack];
+        let length = newStack.length;
+        let stackObject = {
+            start: 0,
+            mid: Math.floor((array.length - 1) / 2),
+            end: array.length - 1,
+            completedIndexes: []
+        }
+        let sortingFrom = {
+            startIndex: undefined,
+            endIndex: undefined
+        }
+        this.sleep(sortingSpeed).then(e => {
+            if (length === 0) {
+                newStack.push(stackObject)
+            }
+            else {
+                let newObj = { ...newStack[length - 1] };
+                if (newObj.start >= newObj.end) {
+                    if (length - 2 >= 0) {
+                        let informNextObj = newStack[length - 2];
+                        informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
+                    }
+                    newStack.pop();
+                }
+                else {
+                    let mid = newObj.start + Math.floor((newObj.end - newObj.start) / 2);
+                    if (!newObj.completedIndexes.includes(newObj.start)) {
+                        stackObject = { ...newObj, end: mid, completedIndexes: [] }
+                        newStack.push(stackObject);
+                    }
+                    else if (!newObj.completedIndexes.includes(newObj.end)) {
+                        stackObject = { ...newObj, start: mid + 1, completedIndexes: [] }
+                        newStack.push(stackObject);
+                    }
+                    if (newObj.completedIndexes.includes(newObj.start) && newObj.completedIndexes.includes(newObj.end)) {
+                        // this.sortEle(newObj.start, newObj.end);
+                        sortingFrom = {
+                            startIndex: newObj.start,
+                            endIndex: newObj.end
+                        }
+                        // console.log("index to be sorted : ", newObj.start, newObj.end);
+                        if (length - 2 >= 0) {
+                            let informNextObj = newStack[length - 2];
+                            if (informNextObj.completedIndexes.length === 0) {
+                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
+                            }
+                            else if (informNextObj.completedIndexes.length === 1) {
+                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.end];
+                            }
+                        }
 
+                        newStack.pop();
+                    }
+                }
+            }
+            this.setState({ mergeSortInfo: { ...mergeSortInfo, stack: newStack, sortingFrom: sortingFrom } });
+        });
     }
 
+    sortEle = (start, end) => {
+        const { array, mergeSortInfo, sortingSpeed } = this.state;
+        let { stack, sortingFrom, shortArray } = mergeSortInfo;
+        let { currentStartIndex, currentEndIndex } = sortingFrom;
+        let cStartIndex = currentStartIndex ? currentStartIndex : start;
+        let mid = start + Math.floor((end - start) / 2);
+        let cEndIndex = currentEndIndex ? currentEndIndex : mid + 1;
+        let i = cStartIndex;
+        let j = cEndIndex;
+        let newShortArray = [...shortArray];
+        this.sleep(sortingSpeed).then(e => {
+            if (i <= mid && j <= end) {
+                if (array[i] <= array[j]) {
+                    newShortArray.push(array[j]);
+                    j++;
+                }
+                else {
+                    newShortArray.push(array[i]);
+                    i++;
+                }
+            }
+            else {
+                let newArray = [...shortArray];
+                let ar = [...array];
+                for (let l = i; l <= mid; l++) {
+                    newArray.push(ar[l]);
+                }
+                for (let k = j; k <= end; k++) {
+                    newArray.push(ar[k]);
+                }
+                i = start;
+                for (let l = 0; l < newArray.length; l++) {
+                    ar[i] = newArray[l];
+                    i++;
+                }
+                if (start === 0 && end === array.length - 1) {
+                    this.setState({ isDisabled: false })
+                }
+                this.setState({
+                    mergeSortInfo: {
+                        ...mergeSortInfo,
+                        sortingFrom: {
+                            startIndex: undefined,
+                            endIndex: undefined,
+                            currentStartIndex: i,
+                            currentEndIndex: j
+                        },
+                        shortArray: []
+                    },
+                    array: ar,
+                    comparedIndex: []
+                });
+                return;
+            }
+
+            this.setState({
+
+                mergeSortInfo: {
+                    ...mergeSortInfo,
+                    sortingFrom: {
+                        startIndex: start,
+                        endIndex: end,
+                        currentStartIndex: i,
+                        currentEndIndex: j
+                    },
+                    shortArray: newShortArray
+                },
+                comparedIndex: [--i, --j]
+            })
+        })
+    }
 
     bubbleSort = () => {
         const { array, comparedIndex, bubbleSortInfo, sortingSpeed } = this.state;
@@ -87,9 +228,6 @@ class Sorting extends Component {
         let newArray = [...array];
         let n = array.length;
         let i = currentStartIndex;
-        if (currentStartIndex % 2 !== 0) {
-            console.log("Test");
-        }
         let j = comparedIndex[1] !== undefined ? comparedIndex[1] + 1 : nextStartIndex;
         if (currentStartIndex < n && nextStartIndex < n) {
             this.sleep(sortingSpeed / 1000000).then(e => {
@@ -119,10 +257,10 @@ class Sorting extends Component {
             this.callAlgorithmMethod();
         }
     }
- 
+
     shouldComponentUpdate(nextProps, nextState) {
-        const { array, isDisabled, comparedIndex, sortingSpeed } = this.state;
-        if (nextState.array.length !== array.length || nextState.isDisabled !== isDisabled || nextState.comparedIndex !== comparedIndex || nextState.sortingSpeed !== sortingSpeed) {
+        const { array, isDisabled, comparedIndex, sortingSpeed, mergeSortInfo } = this.state;
+        if (nextState.array.length !== array.length || nextState.isDisabled !== isDisabled || nextState.comparedIndex !== comparedIndex || nextState.sortingSpeed !== sortingSpeed || nextState.mergeSortInfo !== mergeSortInfo) {
             return true;
         }
         return false;
@@ -132,7 +270,6 @@ class Sorting extends Component {
         const { array, sortAlgorithmSelected, comparedIndex, isDisabled, bubbleSortInfo, sortingSpeed } = this.state;
         const { sortedIndexes } = bubbleSortInfo;
         let arrayView = [];
-        // console.log(sortedIndexes);
         let eachEleWidth = (100 / array.length) - 0.2;
         for (let i = 0; i < array.length; i++) {
             arrayView.push(<div
