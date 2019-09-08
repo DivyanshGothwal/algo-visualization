@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { Button, Slider, Row, Col, Select, Form, } from 'antd';
 import { Application } from '../../configurations';
 import { Generics } from '../../utils';
-
-
-
 import { Towers } from '../../components'
 
 let initialState = {
