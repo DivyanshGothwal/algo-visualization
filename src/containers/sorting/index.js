@@ -253,9 +253,9 @@ class Sorting extends Component {
             end: array.length - 1,
             completedIndexes: []
         }
+        console.log("Test Quicksort");
         this.sleep(sortingSpeed).then(e => {
             if (length == 0) {
-
                 newStack.push(stackObject);
                 this.setState({
                     quickstartInfo: {
@@ -263,67 +263,70 @@ class Sorting extends Component {
                         sortingFrom: {
                             startIndex: stackObject.start,
                             endIndex: stackObject.end
-                        }
-                    },
-                    stack: newStack
+                        },
+                        pivot: {
+                            element: array[stackObject.end],
+                            index: stackObject.end
+                        },
+                        stack: newStack
+                    }
                 });
             }
             else {
-                let newObj = { ...newStack[length - 1] };
-                if (newObj.start >= newObj.end) {
-                    if (length - 2 >= 0) {
-                        let informNextObj = newStack[length - 2];
-                        informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
-                    }
-                    newStack.pop();
-                }
-                else {
-
-                    if (!newObj.completedIndexes.includes(newObj.start)) {
-                        stackObject = { ...newObj, end: quickstartInfo.recurringIndex - 1, completedIndexes: [] }
-                        newStack.push(stackObject);
-                        this.setState({
-                            quickstartInfo: {
-                                ...quickstartInfo,
-                                sortingFrom: {
-                                    startIndex: stackObject.start,
-                                    endIndex: stackObject.end
-                                }
-                            }
-                        });
-                    }
-                    else if (!newObj.completedIndexes.includes(newObj.end)) {
-                        stackObject = { ...newObj, start: quickstartInfo.recurringIndex + 1, completedIndexes: [] }
-                        newStack.push(stackObject);
-                        this.setState({
-                            quickstartInfo: {
-                                ...quickstartInfo,
-                                sortingFrom: {
-                                    startIndex: stackObject.start,
-                                    endIndex: stackObject.end
-                                }
-                            }
-                        });
-                    }
-                    if (newObj.completedIndexes.includes(newObj.start) && newObj.completedIndexes.includes(newObj.end)) {
-                        // sortingFrom = {
-                        //     startIndex: newObj.start,
-                        //     endIndex: newObj.end
-                        // }
-                        if (length - 2 >= 0) {
-                            let informNextObj = newStack[length - 2];
-                            if (informNextObj.completedIndexes.length === 0) {
-                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
-                            }
-                            else if (informNextObj.completedIndexes.length === 1) {
-                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.end];
-                            }
-                        }
-                        newStack.pop();
-                    }
-                }
+                // let newStackObj = { ...newStack[length - 1] };
+                // if (newStackObj.start >= newStackObj.end) {
+                //     if (length - 2 >= 0) {
+                //         let informNextObj = newStack[length - 2];
+                //         informNextObj.completedIndexes = [...informNextObj.completedIndexes, newStackObj.start];
+                //     }
+                //     newStack.pop();
+                // }
+                // else {
+                //     if (!newStackObj.completedIndexes.includes(newStackObj.start)) {
+                //         stackObject = { ...newStackObj, end: quickstartInfo.recurringIndex - 1, completedIndexes: [] }
+                //         newStack.push(stackObject);
+                //         this.setState({
+                //             quickstartInfo: {
+                //                 ...quickstartInfo,
+                //                 sortingFrom: {
+                //                     startIndex: stackObject.start,
+                //                     endIndex: stackObject.end
+                //                 }
+                //             }
+                //         });
+                //     }
+                //     else if (!newStackObj.completedIndexes.includes(newStackObj.end)) {
+                //         stackObject = { ...newStackObj, start: quickstartInfo.recurringIndex + 1, completedIndexes: [] }
+                //         newStack.push(stackObject);
+                //         this.setState({
+                //             quickstartInfo: {
+                //                 ...quickstartInfo,
+                //                 sortingFrom: {
+                //                     startIndex: stackObject.start,
+                //                     endIndex: stackObject.end
+                //                 }
+                //             }
+                //         });
+                //     }
+                //     if (newStackObj.completedIndexes.includes(newStackObj.start) && newStackObj.completedIndexes.includes(newStackObj.end)) {
+                //         // sortingFrom = {
+                //         //     startIndex: newObj.start,
+                //         //     endIndex: newObj.end
+                //         // }
+                //         if (length - 2 >= 0) {
+                //             let informNextObj = newStack[length - 2];
+                //             if (informNextObj.completedIndexes.length === 0) {
+                //                 informNextObj.completedIndexes = [...informNextObj.completedIndexes, newStackObj.start];
+                //             }
+                //             else if (informNextObj.completedIndexes.length === 1) {
+                //                 informNextObj.completedIndexes = [...informNextObj.completedIndexes, newStackObj.end];
+                //             }
+                //         }
+                //         newStack.pop();
+                //     }
+                // }
+                // this.setState({ quickstartInfo: { ...quickstartInfo, stack: newStack } });
             }
-            this.setState({ quickstartInfo: { ...quickstartInfo, stack: newStack } });
         })
     }
     quickSortEle = (startIndex, endIndex) => {
@@ -331,25 +334,17 @@ class Sorting extends Component {
         let newArray = [...array];
         let start = startIndex;
         let end = null;
-        let ele = null;
+        console.log("Test QuicksortElement:-  " + startIndex + "  " + endIndex);
         if (quickstartInfo.isNewSortElement) {
             end = endIndex - 1;
-            this.setState({
-                quickstartInfo: {
-                    ...quickstartInfo,
-                    pivot: {
-                        element: array[endIndex],
-                        index: endIndex
-                    }
-                }
-            });
         }
         else end = endIndex;
         this.sleep(sortingSpeed * 10).then(e => {
             if (start < end) {
                 let ele = quickstartInfo.pivot.element;
                 if (ele) {
-                    this.setState({ comparedIndex: [start, end] });
+                    let initialStart = start;
+                    let initialEnd = end;
                     if (newArray[start] >= ele && newArray[end] > ele) {
                         start++;
                     } else if (newArray[start] >= ele && newArray[end] < ele) {
@@ -366,6 +361,7 @@ class Sorting extends Component {
                     }
                     this.setState({
                         array: newArray,
+                        comparedIndex: [initialStart, initialEnd],
                         quickstartInfo: {
                             ...quickstartInfo,
                             isNewSortElement: false,
@@ -373,12 +369,12 @@ class Sorting extends Component {
                                 startIndex: start,
                                 endIndex: end
                             },
-
                         }
                     });
                 }
             }
             else {
+                let ele = quickstartInfo.pivot.element;
                 if (start < newArray.length) {
                     if (newArray[start] < ele) {
                         let temp = newArray[start];
@@ -394,27 +390,31 @@ class Sorting extends Component {
                                 sortingFrom: {
                                     startIndex: undefined,
                                     endIndex: undefined
-                                }
+                                },
+                                isNewSortElement: false
                             }
                         })
                     }
                     else if (newArray[start] > ele) {
-                        let temp = newArray[start];
-                        newArray[start] = newArray[quickstartInfo.pivot.index];
-                        newArray[quickstartInfo.pivot.index] = temp;
-                        this.setState({
-                            array: newArray,
-                            comparedIndex: [start, quickstartInfo.pivot.index],
-                            quickstartInfo: {
-                                ...quickstartInfo,
-                                isNewSortElement: false,
-                                recurringIndex: start + 1,
-                                sortingFrom: {
-                                    startIndex: undefined,
-                                    endIndex: undefined
+                        if (start + 1 < array.length && newArray[start + 1] < ele) {
+                            let temp = newArray[start + 1];
+                            newArray[start + 1] = newArray[quickstartInfo.pivot.index];
+                            newArray[quickstartInfo.pivot.index] = temp;
+                            this.setState({
+                                array: newArray,
+                                comparedIndex: [start + 1, quickstartInfo.pivot.index],
+                                quickstartInfo: {
+                                    ...quickstartInfo,
+                                    isNewSortElement: false,
+                                    recurringIndex: start + 1,
+                                    sortingFrom: {
+                                        startIndex: undefined,
+                                        endIndex: undefined
+                                    },
+                                    isNewSortElement: false
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             }
