@@ -20,6 +20,19 @@ let initialState = {
         },
         shortArray: []
     },
+    quickstartInfo: {
+        stack: [],
+        sortingFrom: {
+            startIndex: undefined,
+            endIndex: undefined
+        },
+        isNewSortElement: true,
+        recurringIndex: undefined,
+        pivot: {
+            element: undefined,
+            index: undefined
+        }
+    },
     sortingSpeed: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_SPEED,
     arraySizeToShow: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE,
     sortAlgorithmSelected: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_TYPE,
@@ -31,12 +44,24 @@ class Sorting extends Component {
     }
 
     onArraySizeChange = (value) => {
+        const { quickstartInfo } = this.state;
         if (value >= Application.ALGORITHMS.SORTING.MIN_ARRAY_SIZE && value <= Application.ALGORITHMS.SORTING.MAX_ARRAY_SIZE) {
             let array = [];
             for (let i = 0; i < value; i++) {
                 array.push(Math.ceil(100 / ((Math.random() * value) + 1)) * 10);
             }
-            this.setState({ ...initialState, array: array, sortingSpeed: this.state.sortingSpeed });
+            this.setState({
+                ...initialState,
+                array: array,
+                sortingSpeed: this.state.sortingSpeed,
+                quickstartInfo: {
+                    ...quickstartInfo,
+                    // sortingFrom: {
+                    //     startIndex: 0,
+                    //     endIndex: array.length - 1
+                    // }
+                }
+            });
         }
     }
     onSpeedChange = (value) => {
@@ -51,11 +76,11 @@ class Sorting extends Component {
         this.callAlgorithmMethod();
     }
     callAlgorithmMethod = () => {
-        const { sortAlgorithmSelected, mergeSortInfo } = this.state;
+        const { sortAlgorithmSelected, mergeSortInfo, quickstartInfo } = this.state;
         switch (sortAlgorithmSelected) {
             case Application.ALGORITHMS.SORTING.TYPES.MERGE_SORT: {
                 if (mergeSortInfo.sortingFrom.startIndex !== undefined && mergeSortInfo.sortingFrom.endIndex !== undefined) {
-                    this.sortEle(mergeSortInfo.sortingFrom.startIndex, mergeSortInfo.sortingFrom.endIndex);
+                    this.mergeSortEle(mergeSortInfo.sortingFrom.startIndex, mergeSortInfo.sortingFrom.endIndex);
                 }
                 else {
                     this.mergeSort();
@@ -71,7 +96,12 @@ class Sorting extends Component {
                 break;
             }
             case Application.ALGORITHMS.SORTING.TYPES.QUICK_SORT: {
-                this.quickSort();
+                if (quickstartInfo.sortingFrom.startIndex !== undefined && quickstartInfo.sortingFrom.endIndex !== undefined) {
+                    this.quickSortEle(quickstartInfo.sortingFrom.startIndex, quickstartInfo.sortingFrom.endIndex);
+                }
+                else {
+                    this.quickSort();
+                }
                 break;
             }
             default:
@@ -120,12 +150,10 @@ class Sorting extends Component {
                         newStack.push(stackObject);
                     }
                     if (newObj.completedIndexes.includes(newObj.start) && newObj.completedIndexes.includes(newObj.end)) {
-                        // this.sortEle(newObj.start, newObj.end);
                         sortingFrom = {
                             startIndex: newObj.start,
                             endIndex: newObj.end
                         }
-                        // console.log("index to be sorted : ", newObj.start, newObj.end);
                         if (length - 2 >= 0) {
                             let informNextObj = newStack[length - 2];
                             if (informNextObj.completedIndexes.length === 0) {
@@ -144,7 +172,7 @@ class Sorting extends Component {
         });
     }
 
-    sortEle = (start, end) => {
+    mergeSortEle = (start, end) => {
         const { array, mergeSortInfo, sortingSpeed } = this.state;
         let { sortingFrom, shortArray } = mergeSortInfo;
         let { currentStartIndex, currentEndIndex } = sortingFrom;
@@ -212,8 +240,185 @@ class Sorting extends Component {
                     shortArray: newShortArray
                 },
                 comparedIndex: [--i, --j]
-            })
+            });
+        });
+    }
+
+    quickSort = () => {
+        const { quickstartInfo, array, sortingSpeed } = this.state;
+        let newStack = [...quickstartInfo.stack];
+        let length = newStack.length;
+        let stackObject = {
+            start: 0,
+            end: array.length - 1,
+            completedIndexes: []
+        }
+        this.sleep(sortingSpeed).then(e => {
+            if (length == 0) {
+
+                newStack.push(stackObject);
+                this.setState({
+                    quickstartInfo: {
+                        ...quickstartInfo,
+                        sortingFrom: {
+                            startIndex: stackObject.start,
+                            endIndex: stackObject.end
+                        }
+                    },
+                    stack: newStack
+                });
+            }
+            else {
+                let newObj = { ...newStack[length - 1] };
+                if (newObj.start >= newObj.end) {
+                    if (length - 2 >= 0) {
+                        let informNextObj = newStack[length - 2];
+                        informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
+                    }
+                    newStack.pop();
+                }
+                else {
+
+                    if (!newObj.completedIndexes.includes(newObj.start)) {
+                        stackObject = { ...newObj, end: quickstartInfo.recurringIndex - 1, completedIndexes: [] }
+                        newStack.push(stackObject);
+                        this.setState({
+                            quickstartInfo: {
+                                ...quickstartInfo,
+                                sortingFrom: {
+                                    startIndex: stackObject.start,
+                                    endIndex: stackObject.end
+                                }
+                            }
+                        });
+                    }
+                    else if (!newObj.completedIndexes.includes(newObj.end)) {
+                        stackObject = { ...newObj, start: quickstartInfo.recurringIndex + 1, completedIndexes: [] }
+                        newStack.push(stackObject);
+                        this.setState({
+                            quickstartInfo: {
+                                ...quickstartInfo,
+                                sortingFrom: {
+                                    startIndex: stackObject.start,
+                                    endIndex: stackObject.end
+                                }
+                            }
+                        });
+                    }
+                    if (newObj.completedIndexes.includes(newObj.start) && newObj.completedIndexes.includes(newObj.end)) {
+                        // sortingFrom = {
+                        //     startIndex: newObj.start,
+                        //     endIndex: newObj.end
+                        // }
+                        if (length - 2 >= 0) {
+                            let informNextObj = newStack[length - 2];
+                            if (informNextObj.completedIndexes.length === 0) {
+                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.start];
+                            }
+                            else if (informNextObj.completedIndexes.length === 1) {
+                                informNextObj.completedIndexes = [...informNextObj.completedIndexes, newObj.end];
+                            }
+                        }
+                        newStack.pop();
+                    }
+                }
+            }
+            this.setState({ quickstartInfo: { ...quickstartInfo, stack: newStack } });
         })
+    }
+    quickSortEle = (startIndex, endIndex) => {
+        const { array, quickstartInfo, sortingSpeed } = this.state;
+        let newArray = [...array];
+        let start = startIndex;
+        let end = null;
+        let ele = null;
+        if (quickstartInfo.isNewSortElement) {
+            end = endIndex - 1;
+            this.setState({
+                quickstartInfo: {
+                    ...quickstartInfo,
+                    pivot: {
+                        element: array[endIndex],
+                        index: endIndex
+                    }
+                }
+            });
+        }
+        else end = endIndex;
+        this.sleep(sortingSpeed * 10).then(e => {
+            if (start < end) {
+                let ele = quickstartInfo.pivot.element;
+                if (ele) {
+                    this.setState({ comparedIndex: [start, end] });
+                    if (newArray[start] >= ele && newArray[end] > ele) {
+                        start++;
+                    } else if (newArray[start] >= ele && newArray[end] < ele) {
+                        start++;
+                        end--;
+                    } else if (newArray[start] <= ele && newArray[end] < ele) {
+                        end--;
+                    } else {
+                        let temp = newArray[start];
+                        newArray[start] = newArray[end];
+                        newArray[end] = temp;
+                        start++;
+                        end--;
+                    }
+                    this.setState({
+                        array: newArray,
+                        quickstartInfo: {
+                            ...quickstartInfo,
+                            isNewSortElement: false,
+                            sortingFrom: {
+                                startIndex: start,
+                                endIndex: end
+                            },
+
+                        }
+                    });
+                }
+            }
+            else {
+                if (start < newArray.length) {
+                    if (newArray[start] < ele) {
+                        let temp = newArray[start];
+                        newArray[start] = newArray[quickstartInfo.pivot.index];
+                        newArray[quickstartInfo.pivot.index] = temp;
+                        this.setState({
+                            array: newArray,
+                            comparedIndex: [start, quickstartInfo.pivot.index],
+                            quickstartInfo: {
+                                ...quickstartInfo,
+                                isNewSortElement: false,
+                                recurringIndex: start,
+                                sortingFrom: {
+                                    startIndex: undefined,
+                                    endIndex: undefined
+                                }
+                            }
+                        })
+                    }
+                    else if (newArray[start] > ele) {
+                        let temp = newArray[start];
+                        newArray[start] = newArray[quickstartInfo.pivot.index];
+                        newArray[quickstartInfo.pivot.index] = temp;
+                        this.setState({
+                            array: newArray,
+                            comparedIndex: [start, quickstartInfo.pivot.index],
+                            quickstartInfo: {
+                                ...quickstartInfo,
+                                isNewSortElement: false,
+                                recurringIndex: start + 1,
+                                sortingFrom: {
+                                    startIndex: undefined,
+                                    endIndex: undefined
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     bubbleSort = () => {
@@ -253,8 +458,8 @@ class Sorting extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        const { array, isDisabled, comparedIndex, sortingSpeed, mergeSortInfo } = this.state;
-        if (nextState.array.length !== array.length || nextState.isDisabled !== isDisabled || nextState.comparedIndex !== comparedIndex || nextState.sortingSpeed !== sortingSpeed || nextState.mergeSortInfo !== mergeSortInfo) {
+        const { array, isDisabled, comparedIndex, sortingSpeed, mergeSortInfo, quickstartInfo } = this.state;
+        if (nextState.array.length !== array.length || nextState.isDisabled !== isDisabled || nextState.comparedIndex !== comparedIndex || nextState.sortingSpeed !== sortingSpeed || nextState.mergeSortInfo !== mergeSortInfo || nextState.quickstartInfo != quickstartInfo) {
             return true;
         }
         return false;
