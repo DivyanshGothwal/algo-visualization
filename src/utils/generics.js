@@ -20,3 +20,27 @@ export const generateRandomArray = (maxArraySize) => {
     }
     return newArray;
 } 
+
+export const getDefaultMediaQueries = () => {
+    // media query for extra large devices
+    let extraLargeDeviceMedia = window.matchMedia("(min-width: 1199px)");
+
+    // media query for large devices
+    let largeDeviceMedia = window.matchMedia("(min-width: 991px)");
+
+    // media query for medium devices
+    let mediumDeviceMedia = window.matchMedia("(min-width: 767px)");
+
+    // media query for small devices
+    let smallDeviceMedia = window.matchMedia("(min-width: 575px)");
+
+    // media query for extra small devices
+    let extraSmallDeviceMedia = window.matchMedia("(max-width: 574px)");
+    return {
+        extraLarge: extraLargeDeviceMedia,
+        largeDevice: largeDeviceMedia,
+        mediumDevice: mediumDeviceMedia,
+        smallDevice: smallDeviceMedia,
+        extraSmallDevice: extraSmallDeviceMedia
+    }
+}
