@@ -16,8 +16,13 @@ let initialState = {
     },
     bubbleSortInfo: {
         currentStartIndex: 0,
+        nextStartIndex: 1
+    },
+    selectionSortInfo: {
+        currentStartIndex: 0,
         nextStartIndex: 1,
-        sortedIndexes: []
+        sortedIndexes: [],
+        maxEleIndex: 0
     },
     mergeSortInfo: {
         stack: [],
@@ -37,6 +42,7 @@ let initialState = {
         isNewSortElement: true,
         recurringIndex: undefined,
     },
+    sortedIndexes: [],
     sortingSpeed: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_SPEED,
     arraySizeToShow: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE,
     sortAlgorithmSelected: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_TYPE,
@@ -48,7 +54,6 @@ class Sorting extends Component {
     }
 
     onArraySizeChange = (value) => {
-        const { quickstartInfo } = this.state;
         if (value >= Application.ALGORITHMS.SORTING.MIN_ARRAY_SIZE && value <= Application.ALGORITHMS.SORTING.MAX_ARRAY_SIZE) {
             let array = [];
             for (let i = 0; i < value; i++) {
@@ -108,6 +113,38 @@ class Sorting extends Component {
     sleep = async (msec) => {
         return new Promise(resolve => setTimeout(resolve, msec));
     }
+
+    selectionSort = () => {
+        const { array, comparedIndex, selectionSortInfo, sortingSpeed, sortedIndexes } = this.state;
+        const { currentStartIndex, nextStartIndex } = selectionSortInfo;
+        let newArray = [...array];
+        let n = array.length;
+        let i = currentStartIndex;
+        let j = comparedIndex[1] !== undefined ? comparedIndex[1] + 1 : nextStartIndex;
+        if (currentStartIndex < n && nextStartIndex < n) {
+            this.sleep(sortingSpeed).then(e => {
+                let maxEle = selectionSortInfo.maxEleIndex;
+                if (i < n && j < n) {
+                    if (newArray[maxEle] < newArray[j]) {
+                        maxEle = j;
+                    }
+                    this.setState({ comparedIndex: [i, j], selectionSortInfo: { ...selectionSortInfo, maxEleIndex: maxEle }, array: newArray });
+                }
+                else {
+                    let temp = newArray[i];
+                    newArray[i] = newArray[maxEle];
+                    newArray[maxEle] = temp;
+                    let newSortedIndexes = [...sortedIndexes, currentStartIndex];
+                    this.setState({ array: newArray, comparedIndex: [], sortedIndexes: newSortedIndexes, selectionSortInfo: { ...selectionSortInfo, maxEleIndex: currentStartIndex + 1, currentStartIndex: currentStartIndex + 1, nextStartIndex: nextStartIndex + 1 } });
+                }
+            });
+        }
+        else {
+            let newSortedIndexes = [...sortedIndexes, currentStartIndex];
+            this.setState({ isDisabled: false, comparedIndex: [], sortedIndexes: newSortedIndexes, selectionSortInfo: { ...selectionSortInfo, maxEleIndex: 0, currentStartIndex: 0, nextStartIndex: 1 } });
+        }
+    }
+
 
     mergeSort = () => {
         const { mergeSortInfo, array, sortingSpeed } = this.state;
@@ -244,9 +281,6 @@ class Sorting extends Component {
     quickSort = () => {
         const { quickstartInfo, array, sortingSpeed } = this.state;
         let newStack = [...quickstartInfo.stack];
-        // if (quickstartInfo.recurringIndex > array.length) {
-        //     return;
-        // }
         let length = newStack.length;
         this.sleep(sortingSpeed).then(e => {
             if (length === 0) {
@@ -334,8 +368,6 @@ class Sorting extends Component {
                         return;
                     }
                 }
-
-                console.log(quickstartInfo.recurringIndex, topStackObj, newStack);
                 this.setState({
                     quickstartInfo: {
                         ...quickstartInfo,
@@ -370,13 +402,11 @@ class Sorting extends Component {
             beforeStart = quickstartInfo.sortingFrom.beforeStart;
         }
         this.sleep(sortingSpeed).then(e => {
-            console.log("Test QuicksortElement:-  " + startIndex + "  " + endIndex);
             if (start <= end) {
                 let ele = pivot.element;
                 if (ele) {
                     let initialBeforeStart = beforeStart;
                     let initialStart = start;
-                    let initialEnd = end;
                     if (newArray[start] >= ele) {
                         beforeStart++;
                         let temp = newArray[start];
@@ -406,7 +436,6 @@ class Sorting extends Component {
                     let temp = newArray[pivot.index];
                     newArray[start] = newArray[beforeStart];
                     newArray[beforeStart] = temp;
-                    let ele = pivot.element;
                     this.setState({
                         array: newArray,
                         comparedIndex: [start, beforeStart],
@@ -426,8 +455,8 @@ class Sorting extends Component {
     }
 
     bubbleSort = () => {
-        const { array, comparedIndex, bubbleSortInfo, sortingSpeed } = this.state;
-        const { currentStartIndex, nextStartIndex, sortedIndexes } = bubbleSortInfo;
+        const { array, comparedIndex, bubbleSortInfo, sortingSpeed, sortedIndexes } = this.state;
+        const { currentStartIndex, nextStartIndex } = bubbleSortInfo;
         let newArray = [...array];
         let n = array.length;
         let i = currentStartIndex;
@@ -444,13 +473,13 @@ class Sorting extends Component {
                 }
                 else {
                     let newSortedIndexes = [...sortedIndexes, currentStartIndex];
-                    this.setState({ comparedIndex: [], bubbleSortInfo: { ...bubbleSortInfo, currentStartIndex: currentStartIndex + 1, nextStartIndex: nextStartIndex + 1, sortedIndexes: newSortedIndexes } });
+                    this.setState({ comparedIndex: [], sortedIndexes: newSortedIndexes, bubbleSortInfo: { ...bubbleSortInfo, currentStartIndex: currentStartIndex + 1, nextStartIndex: nextStartIndex + 1 } });
                 }
             });
         }
         else {
             let newSortedIndexes = [...sortedIndexes, currentStartIndex];
-            this.setState({ isDisabled: false, comparedIndex: [], bubbleSortInfo: { ...bubbleSortInfo, currentStartIndex: 0, nextStartIndex: 1, sortedIndexes: newSortedIndexes, } });
+            this.setState({ isDisabled: false, comparedIndex: [], sortedIndexes: newSortedIndexes, bubbleSortInfo: { ...bubbleSortInfo, currentStartIndex: 0, nextStartIndex: 1, sortedIndexes: newSortedIndexes, } });
         }
     }
 
@@ -478,7 +507,7 @@ class Sorting extends Component {
             </Col>
         )
         switch (sortAlgorithmSelected) {
-            case Application.ALGORITHMS.SORTING.TYPES.MERGE_SORT:{
+            case Application.ALGORITHMS.SORTING.TYPES.MERGE_SORT: {
                 colorInformation.push(
                     <Col xs={24} sm={12} lg={8} key={2}>
                         {/* <div className={[SortingStyles.yellow, SortingStyles.common].join(" ")}></div> */}
@@ -497,7 +526,6 @@ class Sorting extends Component {
                 break;
             }
             case Application.ALGORITHMS.SORTING.TYPES.BUBBLE_SORT: {
-
                 colorInformation.push(
                     <Col xs={24} sm={12} lg={8}>
                         <div className={[SortingStyles.green, SortingStyles.common].join(" ")}></div>
@@ -507,15 +535,21 @@ class Sorting extends Component {
                 break;
             }
             case Application.ALGORITHMS.SORTING.TYPES.SELECTION_SORT: {
-
+                colorInformation.push(
+                    <Col xs={24} sm={12} lg={8}>
+                        <div className={[SortingStyles.green, SortingStyles.common].join(" ")}></div>
+                        <div className={SortingStyles.commonText}>Sorted elements</div>
+                    </Col>
+                )
+                break;
             }
             default:
+                break;
         }
         return colorInformation;
     }
     render() {
-        const { array, sortAlgorithmSelected, comparedIndex, isDisabled, bubbleSortInfo, sortingSpeed, pivot } = this.state;
-        const { sortedIndexes } = bubbleSortInfo;
+        const { array, sortAlgorithmSelected, comparedIndex, isDisabled, sortingSpeed, pivot, sortedIndexes } = this.state;
         let ColorInformation = this.createColorInformation();
         return (
             <React.Fragment>
@@ -565,7 +599,7 @@ class Sorting extends Component {
                     {ColorInformation}
                 </Row>
                 <div style={{ height: "100%", width: "100%", padding: "10px" }}>
-                    <Towers array={array} sortedIndexes={sortedIndexes} comparedIndex={comparedIndex} pivot={pivot.index} />
+                    <Towers array={array} comparedIndex={comparedIndex} pivot={pivot.index} sortedIndexes={sortedIndexes} />
                 </div>
             </React.Fragment>)
     }

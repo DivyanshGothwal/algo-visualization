@@ -5,7 +5,7 @@ import { Generics } from '../../utils';
 
 class Towers extends Component {
     render() {
-        const { array, sortedIndexes, comparedIndex, foundIndex, pivot } = this.props;
+        const { array, comparedIndex, foundIndex, pivot, sortedIndexes } = this.props;
         let eachEleWidth = (100 / array.length) - 0.2;
         let eachEleWidthFinal = Generics.getDefaultMediaQueries().extraSmallDevice.matches ? eachEleWidth - 0.2 : eachEleWidth;
         return array.map((eachElement, i) => (<div
