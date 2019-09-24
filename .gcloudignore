@@ -1,1 +1,4 @@
 /node_modules
+/public
+/src
+/config-overrides.js
