@@ -2,16 +2,11 @@
 steps:
 - name: "gcr.io/cloud-builders/npm"
   args: ["install"]
-timeout: "1600s"
-
-
 
 - name: "gcr.io/cloud-builders/npm"
   args: ["run", "build"]
-timeout: "1600s"
 
 
 
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy"]
-timeout: "1600s"
