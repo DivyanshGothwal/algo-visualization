@@ -496,7 +496,7 @@ class Sorting extends Component {
     //         return true;
     //     }
     //     return false;
-    // }
+    // }//
     createColorInformation = () => {
         const { sortAlgorithmSelected } = this.state;
         let colorInformation = [];
