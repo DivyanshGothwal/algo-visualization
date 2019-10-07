@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
 
+import { Menu, Layout } from 'antd';
 
 import SortingPage from './sorting';
 import SearchingPage from './searching';
 import { Application } from '../configurations';
+import PageStyles from './Page.module.less';
 
 
-import { Menu, Layout } from 'antd';
 const { Header, Content, Footer } = Layout;
 
 
 class Main extends Component {
     render() {
         let selectedPath = Object.entries(Application.ALGORITHMS).map(([key, value]) => {
-            if (value.PATH === this.props.history.location.pathname) {
+            if (value.PATH === this.props.history.location.pathname || this.props.history.location.pathname === "/") {
                 return value.NAME
             }
             else return null;
@@ -25,7 +26,7 @@ class Main extends Component {
                 <Menu
                     theme="dark"
                     mode="horizontal"
-                    defaultSelectedKeys={selectedPath.filter(Boolean)}
+                    defaultSelectedKeys={selectedPath.filter(Boolean)[0]}
                     style={{ lineHeight: '64px' }}
                 >
                     {
@@ -37,7 +38,7 @@ class Main extends Component {
                     }
                 </Menu>
             </Header>
-            <Content style={{ padding: '0 50px' }}>
+            <Content className={PageStyles.main}>
                 <Layout style={{ padding: '24px 0', background: '#fff' }}>
                     <Content style={{ padding: '0 24px', minHeight: "280px" }}>
                         <Switch>

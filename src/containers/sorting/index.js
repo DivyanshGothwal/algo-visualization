@@ -70,7 +70,7 @@ class Sorting extends Component {
         this.setState({ sortingSpeed: value });
     }
     onSortAlgorithmSelect = (value) => {
-        this.setState({ sortAlgorithmSelected: value })
+        this.setState({ ...initialState, sortAlgorithmSelected: value, array: this.state.array })
     }
 
     handleSubmit = () => {

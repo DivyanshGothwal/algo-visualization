@@ -10,12 +10,12 @@ export const ALGORITHMS = {
         },
         NAME: "Sorting",
         PATH: "/sorting",
-        MAX_ARRAY_SIZE: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 30 : 250,
+        MAX_ARRAY_SIZE: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 50 : 250,
         MIN_ARRAY_SIZE: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 10 : 25,
         MAX_SORTING_SPEED: 10,
         MIN_SORTING_SPEED: 1,
         DEFAULT_SORTING_ALGORITHM_TYPE: "Quick Start",
-        DEFAULT_SORTING_ALGORITHM_SIZE: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 30 : 100,
+        DEFAULT_SORTING_ALGORITHM_SIZE: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 50 : 100,
         DEFAULT_SORTING_SPEED: 10
     },
     SEARCHING: {

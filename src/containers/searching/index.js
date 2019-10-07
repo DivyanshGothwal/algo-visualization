@@ -4,8 +4,13 @@ import { Application } from '../../configurations';
 import { Generics } from '../../utils';
 
 import { Towers } from '../../components'
+import SearchingStyle from './searching.module.less';
 
 class Searching extends Component {
+    constructor(props){
+        super(props);
+        this.divRef = React.createRef();
+    }
     state = {
         array: Generics.generateRandomArray(Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE),
         comparedIndex: [],
@@ -93,13 +98,16 @@ class Searching extends Component {
             this.callAlgorithmMethod();
         }
     }
+    componentDidMount(){
+        // let test = this.divRef.current.attachShadow({mode:"open"});
+    }
     render() {
         const { array, searchAlgorithmSelected, searchElementIndex, foundIndex, comparedIndex, isDisabled, sortingSpeed } = this.state;
         return (
-            <React.Fragment>
+            <div ref={this.divRef}>
                 <Form onSubmit={this.handleSubmit}>
                     <Row>
-                        <Col span={6}>
+                        <Col xs={24} sm={10} lg={5} >
                             <Form.Item label="Select size of array">
                                 <Slider
                                     min={Application.ALGORITHMS.SORTING.MIN_ARRAY_SIZE}
@@ -111,7 +119,7 @@ class Searching extends Component {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={10} lg={5} className={SearchingStyle.columnStyle}>
                             <Form.Item label="Select speed(in ms) higher is slower">
                                 <Slider
                                     min={Application.ALGORITHMS.SORTING.MIN_SORTING_SPEED}
@@ -122,7 +130,7 @@ class Searching extends Component {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col offset={1} span={5}>
+                        <Col xs={24} sm={10} lg={6} className={SearchingStyle.extraMargin}>
                             <Form.Item label="Select Algorithm type">
                                 <Select defaultValue={searchAlgorithmSelected} disabled={isDisabled} onChange={this.onSortAlgorithmSelect}>
                                     {
@@ -133,7 +141,7 @@ class Searching extends Component {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col offset={1} span={5}>
+                        <Col xs={24} sm={10} lg={5} className={SearchingStyle.columnStyle}>
                             <Form.Item label="Select element to search">
                                 <Select defaultValue={array[searchElementIndex]} disabled={isDisabled} onChange={this.onSearchElementSelect}>
                                     {
@@ -152,7 +160,7 @@ class Searching extends Component {
                 <div style={{ height: "100%", width: "100%", padding: "10px" }}>
                     <Towers array={array} sortedIndexes={[]} foundIndex={foundIndex} comparedIndex={comparedIndex} />
                 </div>
-            </React.Fragment>)
+            </div>)
     }
 }
 
