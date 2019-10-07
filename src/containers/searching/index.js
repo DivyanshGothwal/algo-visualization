@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Slider, Row, Col, Select, Form, } from 'antd';
 import { Application } from '../../configurations';
 import { Generics } from '../../utils';
@@ -25,7 +25,7 @@ let initialState = {
     foundIndex: undefined
 }
 
-class Searching extends Component {
+class Searching extends PureComponent {
     constructor(props) {
         super(props);
         this.divRef = React.createRef();

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Slider, Row, Col, Select, Form, } from 'antd';
 
 
@@ -48,7 +48,7 @@ let initialState = {
     sortAlgorithmSelected: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_TYPE,
     isDisabled: false
 }
-class Sorting extends Component {
+class Sorting extends PureComponent {
     state = {
         ...initialState
     }

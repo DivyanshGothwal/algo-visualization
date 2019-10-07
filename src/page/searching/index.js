@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { Searching } from '../../containers';
 
 
-class SearchingPage extends Component {
+class SearchingPage extends PureComponent {
     render() {
         return (
             <Searching />

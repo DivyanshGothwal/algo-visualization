@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 
 import { Generics } from '../../utils';
 
 
-class Towers extends Component {
+class Towers extends PureComponent {
     render() {
         const { array, comparedIndex, foundIndex, pivot, sortedIndexes } = this.props;
         let eachEleWidth = (100 / array.length) - 0.2;

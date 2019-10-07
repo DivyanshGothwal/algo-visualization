@@ -1,33 +1,52 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
 
-import { Menu, Layout, Icon } from 'antd';
+import { Menu, Layout, Icon, Drawer } from 'antd';
 
 import SortingPage from './sorting';
 import SearchingPage from './searching';
 import { Application } from '../configurations';
 import PageStyles from './Page.module.less';
+import { Generics } from '../utils';
 
 
 const { Header, Content, Footer } = Layout;
+let drawerBodyStyle = { padding: "14px 0px" }
 
+class Main extends PureComponent {
+    state = {
+        visible: false,
 
-class Main extends Component {
+    }
+    onClose = () => {
+        this.setState({ visible: false });
+    }
+    onMenuClick = () => {
+        this.setState({ visible: true });
+    }
     render() {
+        const { visible } = this.state;
         let selectedPath = Object.entries(Application.ALGORITHMS).map(([key, value]) => {
             if (value.PATH === this.props.history.location.pathname || this.props.history.location.pathname === "/") {
                 return value.NAME
             }
             else return null;
         });
-        return (<Layout>
-            <Header className="header">
-                <div className="logo" />
+        let drawer = (
+            <Drawer
+                title="Select Algorithm"
+                placement="left"
+                closable={true}
+                onClose={this.onClose}
+                visible={visible}
+                className={PageStyles.drawer}
+                bodyStyle={drawerBodyStyle}
+            >
                 <Menu
-                    theme="dark"
-                    mode="horizontal"
+                    theme="light"
+                    mode="vertical"
                     defaultSelectedKeys={selectedPath.filter(Boolean)[0]}
-                    style={{ lineHeight: '64px' }}
+                    className={PageStyles.menu}
                 >
                     {
                         Object.entries(Application.ALGORITHMS).map(([key, value]) => {
@@ -37,7 +56,34 @@ class Main extends Component {
                         })
                     }
                 </Menu>
-            </Header>
+            </Drawer>
+        )
+        let smallDeviceJsMedia = Generics.getDefaultMediaQueries().extraSmallDevice;
+
+
+        return (<Layout>
+            {
+                <Header className={PageStyles.header}>
+                    {
+                        !smallDeviceJsMedia.matches ?
+                            <Menu
+                                theme="dark"
+                                mode="horizontal"
+                                defaultSelectedKeys={selectedPath.filter(Boolean)[0]}
+                                className={PageStyles.menu}
+                            >
+                                {
+                                    Object.entries(Application.ALGORITHMS).map(([key, value]) => {
+                                        return (<Menu.Item key={value.NAME}> <NavLink key={value.NAME} to={value.PATH}>
+                                            {value.NAME}
+                                        </NavLink></Menu.Item>);
+                                    })
+                                }
+                            </Menu>
+                            : <React.Fragment><Icon type="menu" className={PageStyles.menuIcon} onClick={this.onMenuClick} />{drawer}</React.Fragment>
+                    }
+                </Header>
+            }
             <Content className={PageStyles.main}>
                 <Layout className={PageStyles.layout}>
                     <Content className={PageStyles.content}>
@@ -49,7 +95,7 @@ class Main extends Component {
                     </Content>
                 </Layout>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>Algorithm Visualization ©2019 Created with {<Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />} by {<a href="https://github.com/DivyanshGothwal" target="_">Divyansh</a>}</Footer>
+            <Footer className={PageStyles.footer}>Algorithm Visualization ©2019 Created with {<Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />} by {<a href="https://github.com/DivyanshGothwal" target="_">Divyansh</a>}</Footer>
         </Layout>);
     }
 }
