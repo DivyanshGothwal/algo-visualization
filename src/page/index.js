@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, NavLink } from 'react-router-dom';
 
-import { Menu, Layout } from 'antd';
+import { Menu, Layout, Icon } from 'antd';
 
 import SortingPage from './sorting';
 import SearchingPage from './searching';
@@ -39,8 +39,8 @@ class Main extends Component {
                 </Menu>
             </Header>
             <Content className={PageStyles.main}>
-                <Layout style={{ padding: '24px 0', background: '#fff' }}>
-                    <Content style={{ padding: '0 24px', minHeight: "280px" }}>
+                <Layout className={PageStyles.layout}>
+                    <Content className={PageStyles.content}>
                         <Switch>
                             <Route path={Application.ALGORITHMS.SORTING.PATH} component={SortingPage} />
                             <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SearchingPage} />
@@ -49,7 +49,7 @@ class Main extends Component {
                     </Content>
                 </Layout>
             </Content>
-            <Footer style={{ textAlign: 'center' }}>Algorithm Visualization ©2019 Created by Divyansh</Footer>
+            <Footer style={{ textAlign: 'center' }}>Algorithm Visualization ©2019 Created with {<Icon type="heart" theme="twoTone" twoToneColor="#eb2f96" />} by {<a href="https://github.com/DivyanshGothwal" target="_">Divyansh</a>}</Footer>
         </Layout>);
     }
 }

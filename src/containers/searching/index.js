@@ -6,23 +6,32 @@ import { Generics } from '../../utils';
 import { Towers } from '../../components'
 import SearchingStyle from './searching.module.less';
 
+
+let initialState = {
+    array: Generics.generateRandomArray(Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE),
+    comparedIndex: [],
+    sortingSpeed: Application.ALGORITHMS.SEARCHING.DEFAULT_SEARCHING_SPEED,
+    searchAlgorithmSelected: Application.ALGORITHMS.SEARCHING.DEFAULT_SEARCHING_ALGORITHM_TYPE,
+    isDisabled: false,
+    linearSearchInfo: {
+        currentIndex: 0,
+    },
+    binarySearchInfo: {
+        left: 0,
+        right: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE - 1,
+        mid: undefined
+    },
+    searchElementIndex: 0,
+    foundIndex: undefined
+}
+
 class Searching extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.divRef = React.createRef();
     }
     state = {
-        array: Generics.generateRandomArray(Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE),
-        comparedIndex: [],
-        sortingSpeed: Application.ALGORITHMS.SEARCHING.DEFAULT_SEARCHING_SPEED,
-        arraySizeToShow: Application.ALGORITHMS.SEARCHING.DEFAULT_SEARCHING_ALGORITHM_TYPE,
-        searchAlgorithmSelected: Application.ALGORITHMS.SEARCHING.DEFAULT_SEARCHING_ALGORITHM_TYPE,
-        isDisabled: false,
-        linearSearchInfo: {
-            currentIndex: 0,
-        },
-        searchElementIndex: 0,
-        foundIndex: undefined
+        ...initialState
     }
 
     onArraySizeChange = (value) => {
@@ -31,6 +40,9 @@ class Searching extends Component {
             for (let i = 0; i < value; i++) {
                 array.push(Math.ceil(100 / ((Math.random() * value) + 1)) * 10);
             }
+            if (Application.ALGORITHMS.SEARCHING.TYPES.BINARY_SEARCH === this.state.searchAlgorithmSelected) {
+                array.sort((a, b) => b - a);
+            }
             this.setState({ array: array, sortingSpeed: this.state.sortingSpeed, foundIndex: undefined, comparedIndex: [] });
         }
     }
@@ -38,7 +50,14 @@ class Searching extends Component {
         this.setState({ sortingSpeed: value });
     }
     onSortAlgorithmSelect = (value) => {
-        this.setState({ searchAlgorithmSelected: value })
+        let newArray = [...this.state.array];
+        if (Application.ALGORITHMS.SEARCHING.TYPES.BINARY_SEARCH === value) {
+            newArray.sort((a, b) => b - a);
+        }
+        else {
+            newArray = initialState.array;
+        }
+        this.setState({ ...initialState, array: newArray, searchAlgorithmSelected: value })
     }
     onSearchElementSelect = (value) => {
         this.setState({ searchElementIndex: value })
@@ -61,24 +80,63 @@ class Searching extends Component {
     sleep = async (msec) => {
         return new Promise(resolve => setTimeout(resolve, msec));
     }
+
+
+    binarySearch = () => {
+        const { array, binarySearchInfo, sortingSpeed, searchElementIndex } = this.state;
+        this.sleep(sortingSpeed * 10).then(e => {
+            const { left, right } = binarySearchInfo;
+            let mid = Math.floor(left + (right - left) / 2);
+            if (array[mid] < array[searchElementIndex]) {
+                this.setState({
+                    comparedIndex: [searchElementIndex, mid],
+                    binarySearchInfo: {
+                        left: left,
+                        right: mid - 1,
+                        mid: mid
+                    }
+                });
+            }
+            else if (array[mid] > array[searchElementIndex]) {
+                this.setState({
+                    comparedIndex: [searchElementIndex, mid],
+                    binarySearchInfo: {
+                        left: mid + 1,
+                        right: right,
+                        mid: mid
+                    }
+                });
+            }
+            else {
+                this.setState({
+                    comparedIndex: [undefined, undefined],
+                    binarySearchInfo: {
+                        left: 0,
+                        right: Application.ALGORITHMS.SORTING.DEFAULT_SORTING_ALGORITHM_SIZE - 1
+                    },
+                    isDisabled: false,
+                    foundIndex: mid
+                });
+            }
+        });
+    }
+
     linearSearch = () => {
         const { array, linearSearchInfo, sortingSpeed, searchElementIndex } = this.state;
         if (linearSearchInfo.currentIndex < array.length) {
-            this.sleep(sortingSpeed).then(e => {
+            this.sleep(sortingSpeed * 10).then(e => {
                 if (array[linearSearchInfo.currentIndex] !== array[searchElementIndex]) {
                     this.setState({
                         comparedIndex: [searchElementIndex, linearSearchInfo.currentIndex],
                         linearSearchInfo: {
-                            ...linearSearchInfo,
                             currentIndex: linearSearchInfo.currentIndex + 1
                         }
-                    })
+                    });
                 }
                 else {
                     this.setState({
                         comparedIndex: [searchElementIndex, linearSearchInfo.currentIndex],
                         linearSearchInfo: {
-                            ...linearSearchInfo,
                             currentIndex: 0
                         },
                         foundIndex: linearSearchInfo.currentIndex,
@@ -98,11 +156,45 @@ class Searching extends Component {
             this.callAlgorithmMethod();
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         // let test = this.divRef.current.attachShadow({mode:"open"});
     }
+
+
+    createColorInformation = () => {
+        const { searchAlgorithmSelected } = this.state;
+        let colorInformation = [];
+        colorInformation.push(
+            <Col xs={24} sm={12} lg={8} key={1}>
+                <div className={[SearchingStyle.red, SearchingStyle.common].join(" ")}></div>
+                <div className={SearchingStyle.commonText}>ELements being compared</div>
+            </Col>
+        )
+        colorInformation.push(
+            <Col xs={24} sm={12} lg={8} key={2}>
+                <div className={[SearchingStyle.green, SearchingStyle.common].join(" ")}></div>
+                <div className={SearchingStyle.commonText}>Found Element</div>
+            </Col>
+        );
+        switch (searchAlgorithmSelected) {
+            case Application.ALGORITHMS.SEARCHING.TYPES.BINARY_SEARCH: {
+                colorInformation.push(
+                    <Col xs={24} sm={12} lg={8} key={2}>
+                        <div className={[SearchingStyle.yellow, SearchingStyle.common].join(" ")}></div>
+                        <div className={SearchingStyle.commonText}>Pivot</div>
+                    </Col>
+                );
+                break;
+            }
+            default:
+                break;
+        }
+        return colorInformation;
+    }
+
     render() {
-        const { array, searchAlgorithmSelected, searchElementIndex, foundIndex, comparedIndex, isDisabled, sortingSpeed } = this.state;
+        const { array, searchAlgorithmSelected, searchElementIndex, binarySearchInfo, foundIndex, comparedIndex, isDisabled, sortingSpeed } = this.state;
+        let ColorInformation = this.createColorInformation();
         return (
             <div ref={this.divRef}>
                 <Form onSubmit={this.handleSubmit}>
@@ -157,8 +249,11 @@ class Searching extends Component {
                         <Button type="primary" onClick={this.handleSubmit} disabled={isDisabled}>Start visualization</Button>
                     </Form.Item>
                 </Form>
+                <Row>
+                    {ColorInformation}
+                </Row>
                 <div style={{ height: "100%", width: "100%", padding: "10px" }}>
-                    <Towers array={array} sortedIndexes={[]} foundIndex={foundIndex} comparedIndex={comparedIndex} />
+                    <Towers pivot={binarySearchInfo.mid} array={array} sortedIndexes={[]} foundIndex={foundIndex} comparedIndex={comparedIndex} />
                 </div>
             </div>)
     }
