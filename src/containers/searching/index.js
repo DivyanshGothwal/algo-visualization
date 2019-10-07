@@ -60,7 +60,7 @@ class Searching extends PureComponent {
         this.setState({ ...initialState, array: newArray, searchAlgorithmSelected: value })
     }
     onSearchElementSelect = (value) => {
-        this.setState({ searchElementIndex: value })
+        this.setState({ searchElementIndex: parseInt(value) });
     }
     callAlgorithmMethod = () => {
         const { searchAlgorithmSelected } = this.state;

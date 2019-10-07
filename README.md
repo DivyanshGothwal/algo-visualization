@@ -1,2 +1,3 @@
-# sort-algo-visualization
-Visualization tool for popular sort and search algorithms
+# Algorithm-Visualization
+Visualization tool for popular sort, search, graph algorithms
+
