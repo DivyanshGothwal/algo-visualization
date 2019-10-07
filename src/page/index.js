@@ -5,6 +5,7 @@ import { Menu, Layout, Icon, Drawer } from 'antd';
 
 import SortingPage from './sorting';
 import SearchingPage from './searching';
+import PathFinder from './path-finder';
 import { Application } from '../configurations';
 import PageStyles from './Page.module.less';
 import { Generics } from '../utils';
@@ -32,6 +33,13 @@ class Main extends PureComponent {
             }
             else return null;
         });
+        let menuItems = (
+            Object.entries(Application.ALGORITHMS).map(([key, value]) => {
+                return (<Menu.Item key={value.NAME}> <NavLink key={value.NAME} to={value.PATH}>
+                    {value.NAME}
+                </NavLink></Menu.Item>);
+            })
+        );
         let drawer = (
             <Drawer
                 title="Select Algorithm"
@@ -45,22 +53,14 @@ class Main extends PureComponent {
                 <Menu
                     theme="light"
                     mode="vertical"
-                    defaultSelectedKeys={selectedPath.filter(Boolean)[0]}
+                    selectedKeys={selectedPath.filter(Boolean)}
                     className={PageStyles.menu}
                 >
-                    {
-                        Object.entries(Application.ALGORITHMS).map(([key, value]) => {
-                            return (<Menu.Item key={value.NAME}> <NavLink key={value.NAME} to={value.PATH}>
-                                {value.NAME}
-                            </NavLink></Menu.Item>);
-                        })
-                    }
+                    {menuItems}
                 </Menu>
             </Drawer>
-        )
+        );
         let smallDeviceJsMedia = Generics.getDefaultMediaQueries().extraSmallDevice;
-
-
         return (<Layout>
             {
                 <Header className={PageStyles.header}>
@@ -69,16 +69,10 @@ class Main extends PureComponent {
                             <Menu
                                 theme="dark"
                                 mode="horizontal"
-                                defaultSelectedKeys={selectedPath.filter(Boolean)[0]}
+                                selectedKeys={selectedPath.filter(Boolean)}
                                 className={PageStyles.menu}
                             >
-                                {
-                                    Object.entries(Application.ALGORITHMS).map(([key, value]) => {
-                                        return (<Menu.Item key={value.NAME}> <NavLink key={value.NAME} to={value.PATH}>
-                                            {value.NAME}
-                                        </NavLink></Menu.Item>);
-                                    })
-                                }
+                                {menuItems}
                             </Menu>
                             : <React.Fragment><Icon type="menu" className={PageStyles.menuIcon} onClick={this.onMenuClick} />{drawer}</React.Fragment>
                     }
@@ -90,6 +84,7 @@ class Main extends PureComponent {
                         <Switch>
                             <Route path={Application.ALGORITHMS.SORTING.PATH} component={SortingPage} />
                             <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SearchingPage} />
+                            <Route path={Application.ALGORITHMS.PATH_FINDING.PATH} component={PathFinder} />
                             <Redirect to={Application.ALGORITHMS.SORTING.PATH} />
                         </Switch>
                     </Content>

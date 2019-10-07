@@ -32,5 +32,14 @@ export const ALGORITHMS = {
         DEFAULT_SEARCHING_ALGORITHM_TYPE: "Linear Search",
         DEFAULT_SEARCHING_ALGORITHM_SIZE: 50,
         DEFAULT_SEARCHING_SPEED: 10
+    },
+    PATH_FINDING:{
+        TYPES: {
+            DIJKSTRA: "Dijkstra",
+            BREATH_FIRST_TRAVERSAL: "Breath First Traversal",
+            DEPTH_FIRST_TRAVERSAL: "Depth First Traversal"
+        },
+        NAME: "Path Finder",
+        PATH: "/pathFinder",
     }
 }
