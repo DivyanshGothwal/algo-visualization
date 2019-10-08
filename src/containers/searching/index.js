@@ -179,7 +179,7 @@ class Searching extends PureComponent {
         switch (searchAlgorithmSelected) {
             case Application.ALGORITHMS.SEARCHING.TYPES.BINARY_SEARCH: {
                 colorInformation.push(
-                    <Col xs={24} sm={12} lg={8} key={2}>
+                    <Col xs={24} sm={12} lg={8} key={3}>
                         <div className={[SearchingStyle.yellow, SearchingStyle.common].join(" ")}></div>
                         <div className={SearchingStyle.commonText}>Pivot</div>
                     </Col>

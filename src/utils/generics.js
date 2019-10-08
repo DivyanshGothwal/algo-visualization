@@ -1,4 +1,5 @@
 import { Application } from "../configurations";
+// import { Generics } from '../../utils';
 
 export const getValidationRules = (isRequired = false) => ({
     inputArraySize: [
@@ -20,7 +21,29 @@ export const generateRandomArray = (maxArraySize) => {
     }
     return newArray;
 } 
-
+export const generate2DArray = () => {
+    let browserWidth = window.innerWidth;
+        console.log(browserWidth);
+        let extraSmallMediaQueries = getDefaultMediaQueries().extraSmallDevice;
+        if (!extraSmallMediaQueries.matches) {
+            browserWidth -= 168;
+        }
+        else {
+            browserWidth -= 28;
+        }
+        let sizeOfSquare = Application.ALGORITHMS.GRAPH.SIZE_OF_GRID_SQUARES;
+        let noOfSquaresVertically = Application.ALGORITHMS.GRAPH.NUMBER_OF_SQUARES_VERTICALLY;
+        let noOfSquaresHorizontally = Math.floor(browserWidth / sizeOfSquare);
+        let newGraph = [];
+        for (let j = 0; j < noOfSquaresVertically; j++) {
+            let innerGraph = [];
+            for (let i = 0; i < noOfSquaresHorizontally; i++) {
+                innerGraph.push(0);
+            }
+            newGraph.push(innerGraph);
+        }
+        return newGraph;
+}
 export const getDefaultMediaQueries = () => {
     // media query for extra large devices
     let extraLargeDeviceMedia = window.matchMedia("(min-width: 1199px)");

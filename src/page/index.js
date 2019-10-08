@@ -5,7 +5,7 @@ import { Menu, Layout, Icon, Drawer } from 'antd';
 
 import SortingPage from './sorting';
 import SearchingPage from './searching';
-import PathFinder from './path-finder';
+import Graph from './graph';
 import { Application } from '../configurations';
 import PageStyles from './Page.module.less';
 import { Generics } from '../utils';
@@ -84,7 +84,7 @@ class Main extends PureComponent {
                         <Switch>
                             <Route path={Application.ALGORITHMS.SORTING.PATH} component={SortingPage} />
                             <Route path={Application.ALGORITHMS.SEARCHING.PATH} component={SearchingPage} />
-                            <Route path={Application.ALGORITHMS.PATH_FINDING.PATH} component={PathFinder} />
+                            <Route path={Application.ALGORITHMS.GRAPH.PATH} component={Graph} />
                             <Redirect to={Application.ALGORITHMS.SORTING.PATH} />
                         </Switch>
                     </Content>

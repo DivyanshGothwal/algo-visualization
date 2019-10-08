@@ -33,13 +33,15 @@ export const ALGORITHMS = {
         DEFAULT_SEARCHING_ALGORITHM_SIZE: 50,
         DEFAULT_SEARCHING_SPEED: 10
     },
-    PATH_FINDING:{
+    GRAPH: {
         TYPES: {
             DIJKSTRA: "Dijkstra",
             BREATH_FIRST_TRAVERSAL: "Breath First Traversal",
             DEPTH_FIRST_TRAVERSAL: "Depth First Traversal"
         },
-        NAME: "Path Finder",
-        PATH: "/pathFinder",
+        NAME: "Graph",
+        PATH: "/graph",
+        SIZE_OF_GRID_SQUARES: 25,
+        NUMBER_OF_SQUARES_VERTICALLY: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 10 : 20
     }
 }

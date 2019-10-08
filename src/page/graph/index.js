@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
 import { Application } from '../../configurations';
+import { Graph } from '../../containers';
 
 
 class PathFinder extends PureComponent {
@@ -11,6 +12,8 @@ class PathFinder extends PureComponent {
     render() {
         return (
             <React.Fragment>
+
+                <Graph />
                 <div>
                     We are currently working on this section, please visit after some time
                 </div>
