@@ -20,29 +20,47 @@ export const generateRandomArray = (maxArraySize) => {
         newArray.push(Math.ceil(100 / ((Math.random() * maxArraySize) + 1)) * 10);
     }
     return newArray;
-} 
+}
 export const generate2DArray = () => {
     let browserWidth = window.innerWidth;
-        console.log(browserWidth);
-        let extraSmallMediaQueries = getDefaultMediaQueries().extraSmallDevice;
-        if (!extraSmallMediaQueries.matches) {
-            browserWidth -= 168;
+    console.log(browserWidth);
+    let extraSmallMediaQueries = getDefaultMediaQueries().extraSmallDevice;
+    if (!extraSmallMediaQueries.matches) {
+        browserWidth -= 168;
+    }
+    else {
+        browserWidth -= 28;
+    }
+    let sizeOfSquare = Application.ALGORITHMS.GRAPH.SIZE_OF_GRID_SQUARES;
+    let noOfSquaresHorizontally = Math.floor(browserWidth / sizeOfSquare);
+    let noOfSquaresVertically = Application.ALGORITHMS.GRAPH.NUMBER_OF_SQUARES_VERTICALLY;
+    let newGraph = [];
+    for (let j = 0; j < noOfSquaresVertically; j++) {
+        let innerGraph = [];
+        for (let i = 0; i < noOfSquaresHorizontally; i++) {
+            innerGraph.push(0);
         }
-        else {
-            browserWidth -= 28;
-        }
-        let sizeOfSquare = Application.ALGORITHMS.GRAPH.SIZE_OF_GRID_SQUARES;
-        let noOfSquaresVertically = Application.ALGORITHMS.GRAPH.NUMBER_OF_SQUARES_VERTICALLY;
-        let noOfSquaresHorizontally = Math.floor(browserWidth / sizeOfSquare);
-        let newGraph = [];
-        for (let j = 0; j < noOfSquaresVertically; j++) {
-            let innerGraph = [];
-            for (let i = 0; i < noOfSquaresHorizontally; i++) {
-                innerGraph.push(0);
-            }
-            newGraph.push(innerGraph);
-        }
-        return newGraph;
+        newGraph.push(innerGraph);
+    }
+    return newGraph;
+}
+export const getWidth = () => {
+    let browserWidth = window.innerWidth;
+    console.log(browserWidth);
+    let extraSmallMediaQueries = getDefaultMediaQueries().extraSmallDevice;
+    if (!extraSmallMediaQueries.matches) {
+        browserWidth -= 168;
+    }
+    else {
+        browserWidth -= 28;
+    }
+    let sizeOfSquare = Application.ALGORITHMS.GRAPH.SIZE_OF_GRID_SQUARES;
+    console.log("after:- " + browserWidth);
+    console.log((sizeOfSquare / browserWidth) * 100);
+    console.log(Math.floor((sizeOfSquare / browserWidth) * 100));
+    let noOfSquaresHorizontally = Math.floor(browserWidth / sizeOfSquare);
+    console.log(noOfSquaresHorizontally," end");
+    return (1/noOfSquaresHorizontally)*100;
 }
 export const getDefaultMediaQueries = () => {
     // media query for extra large devices

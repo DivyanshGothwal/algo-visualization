@@ -54,6 +54,7 @@ class Sorting extends PureComponent {
     }
 
     onArraySizeChange = (value) => {
+        const { sortingSpeed, sortAlgorithmSelected } = this.state;
         if (value >= Application.ALGORITHMS.SORTING.MIN_ARRAY_SIZE && value <= Application.ALGORITHMS.SORTING.MAX_ARRAY_SIZE) {
             let array = [];
             for (let i = 0; i < value; i++) {
@@ -62,7 +63,8 @@ class Sorting extends PureComponent {
             this.setState({
                 ...initialState,
                 array: array,
-                sortingSpeed: this.state.sortingSpeed
+                sortingSpeed: sortingSpeed,
+                sortAlgorithmSelected: sortAlgorithmSelected
             });
         }
     }
@@ -581,7 +583,7 @@ class Sorting extends PureComponent {
                         </Col>
                         <Col xs={24} sm={12} lg={8} className={SortingStyles.settings} >
                             <Form.Item label="Select Algorithm type">
-                                <Select defaultValue={sortAlgorithmSelected} disabled={isDisabled} onChange={this.onSortAlgorithmSelect}>
+                                <Select defaultValue={sortAlgorithmSelected} value={sortAlgorithmSelected} disabled={isDisabled} onChange={this.onSortAlgorithmSelect}>
                                     {
                                         Object.entries(Application.ALGORITHMS.SORTING.TYPES).map(([key, value]) => {
                                             return <Select.Option key={key} value={value}>{value}</Select.Option>

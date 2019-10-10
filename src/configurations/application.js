@@ -42,6 +42,6 @@ export const ALGORITHMS = {
         NAME: "Graph",
         PATH: "/graph",
         SIZE_OF_GRID_SQUARES: 25,
-        NUMBER_OF_SQUARES_VERTICALLY: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 10 : 20
+        NUMBER_OF_SQUARES_VERTICALLY: Generics.getDefaultMediaQueries().extraSmallDevice.matches ? 15 : 20
     }
 }

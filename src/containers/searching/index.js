@@ -54,9 +54,6 @@ class Searching extends PureComponent {
         if (Application.ALGORITHMS.SEARCHING.TYPES.BINARY_SEARCH === value) {
             newArray.sort((a, b) => b - a);
         }
-        else {
-            newArray = initialState.array;
-        }
         this.setState({ ...initialState, array: newArray, searchAlgorithmSelected: value })
     }
     onSearchElementSelect = (value) => {
@@ -224,7 +221,7 @@ class Searching extends PureComponent {
                         </Col>
                         <Col xs={24} sm={10} lg={6} className={SearchingStyle.extraMargin}>
                             <Form.Item label="Select Algorithm type">
-                                <Select defaultValue={searchAlgorithmSelected} disabled={isDisabled} onChange={this.onSortAlgorithmSelect}>
+                                <Select defaultValue={searchAlgorithmSelected} value={searchAlgorithmSelected} disabled={isDisabled} onChange={this.onSortAlgorithmSelect}>
                                     {
                                         Object.entries(Application.ALGORITHMS.SEARCHING.TYPES).map(([key, value]) => {
                                             return <Select.Option key={key} value={value}>{value}</Select.Option>
@@ -235,7 +232,7 @@ class Searching extends PureComponent {
                         </Col>
                         <Col xs={24} sm={10} lg={5} className={SearchingStyle.columnStyle}>
                             <Form.Item label="Select element to search">
-                                <Select defaultValue={array[searchElementIndex]} disabled={isDisabled} onChange={this.onSearchElementSelect}>
+                                <Select defaultValue={array[searchElementIndex]} value={array[searchElementIndex]} disabled={isDisabled} onChange={this.onSearchElementSelect}>
                                     {
                                         array.map((eachElement, index) => {
                                             return <Select.Option key={index}>{eachElement}</Select.Option>

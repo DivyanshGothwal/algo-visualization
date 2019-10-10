@@ -17,11 +17,11 @@ class Graph extends PureComponent {
             j: 5
         }
     }
-    notifyParentForSourceChange = (i, j, graph) => {
-        this.setState({ sourceNode: { i: i, j: j }, graph: graph });
+    notifyParentForSourceChange = (i, j) => {
+        this.setState({ sourceNode: { i: i, j: j } });
     }
-    notifyParentForDestinationChange = (i, j, graph) => {
-        this.setState({ destinationNode: { i: i, j: j }, graph: graph });
+    notifyParentForDestinationChange = (i, j) => {
+        this.setState({ destinationNode: { i: i, j: j } });
     }
     notifyParentForGraphChange = (graph) => {
         this.setState({ graph: graph });
