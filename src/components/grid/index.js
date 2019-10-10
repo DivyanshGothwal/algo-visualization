@@ -27,7 +27,7 @@ class Grid extends PureComponent {
         let newGraph = [];
         e && e.stopPropagation();
         e && e.preventDefault();
-        if (i !== prevDragOverIndex.i || j !== prevDragOverIndex.j) {
+        if (i !== prevDragOverIndex.i || j !== prevDragOverIndex.j || e === undefined) {
             for (let k = 0; k < graph.length; k++) {
                 let newInnerGraph = [...graph[k]];
                 newGraph.push(newInnerGraph);
