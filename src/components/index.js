@@ -1,8 +1,8 @@
 import Towers from './towers';
-import Grids from './grids';
+import Grid from './grid';
 
 
 export {
     Towers,
-    Grids
+    Grid
 }

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Grids } from '../../components';
+import { Grid } from '../../components';
 // import { Application } from '../../configurations';
 import { Generics } from '../../utils';
 
@@ -29,7 +29,7 @@ class Graph extends PureComponent {
     render() {
         const { graph, sourceNode, prevGraph, destinationNode } = this.state;
         return (
-            <Grids
+            <Grid
                 graph={graph}
                 sourceNode={sourceNode}
                 destinationNode={destinationNode}

@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { Icon } from 'antd';
 
 import { Generics } from '../../utils';
-import GridStyles from './grids.module.less';
+import GridStyles from './grid.module.less';
 import { Application } from '../../configurations';
 import { CommonStyles } from '../../style'
 
-class Grids extends PureComponent {
+class Grid extends PureComponent {
     state = {
         prevDragOverIndex: {
             i: undefined,
@@ -118,7 +118,7 @@ class Grids extends PureComponent {
     }
 }
 
-export default Grids;
+export default Grid;
 let borderStyle = "1px solid #32B3BA"
 let gridStyles = {
     width: Generics.getWidth() + "%",
